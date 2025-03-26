@@ -1,0 +1,10 @@
+﻿@page "/liste"
+@using BlazorApp1.Models
+<h3>ProductList</h3>
+
+@foreach(ProductModel p in ListeProducts)
+{
+    <li>@p.Id</li>
+    <li>@p.Name</li>
+    <li>@p.Description</li>
+}

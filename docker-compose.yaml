@@ -1,0 +1,41 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${POMME_POMME}
+    ports:
+      - "${DB_PORT}:1433"
+    volumes:
+      - data:/var/opt/mssql/
+    networks:
+      - devsecopsnetwork
+
+
+
+  webapi:
+    build: ./WebApplication1
+    depends_on:
+      - sqlserver
+    ports:
+      - "${WEBAPI_PORT}:8080"
+    networks:
+      - devsecopsnetwork
+    restart: unless-stopped
+
+
+  webclient:
+    build: ./BlazorApp1
+    depends_on:
+      - webapi
+    ports:
+      - "${WEBCLIENT_PORT}:80"
+    networks:
+      - devsecopsnetwork
+
+networks:
+  devsecopsnetwork:
+
+volumes:
+  data:
