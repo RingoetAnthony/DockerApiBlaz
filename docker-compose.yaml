@@ -4,38 +4,40 @@ services:
     container_name: sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${POMME_POMME}
+      - MSSQL_SA_PASSWORD=${SA_PASSWORD}
     ports:
       - "${DB_PORT}:1433"
     volumes:
       - data:/var/opt/mssql/
     networks:
-      - devsecopsnetwork
-
-
+      - back
 
   webapi:
     build: ./WebApplication1
+    networks:
+      - midle
+      - back
     depends_on:
       - sqlserver
     ports:
       - "${WEBAPI_PORT}:8080"
-    networks:
-      - devsecopsnetwork
     restart: unless-stopped
 
 
   webclient:
     build: ./BlazorApp1
+    networks:
+      - front
     depends_on:
       - webapi
     ports:
       - "${WEBCLIENT_PORT}:80"
-    networks:
-      - devsecopsnetwork
 
 networks:
-  devsecopsnetwork:
+  front:
+  back:
+    internal: true
+  midle:
 
 volumes:
   data:
